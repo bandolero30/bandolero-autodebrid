@@ -2,6 +2,9 @@
 
 A professional and robust download manager designed to automate file retrieval via **Real-Debrid**, featuring full support for DLC containers, TXT lists, and intelligent queue management.
 
+> [!IMPORTANT]
+> **External Service Requirement**: Bandolero is a bridge to Debrid services. It **requires an active Real-Debrid (AutoDebrid) API token** to function. This software does **NOT** implement native captcha solving; instead, it leverages the [Real-Debrid](https://real-debrid.com/) API to process protected links seamlessly.
+
 ---
 
 ## ✨ Key Features
@@ -13,7 +16,7 @@ A professional and robust download manager designed to automate file retrieval v
 - **Premium Modern UI**: Built with `CustomTkinter`, offering a sleek dark design, high-precision progress bars, and a detailed event console with a professional hacker aesthetic.
 - **Seamless Registry Integration**: Custom Pirate Skull icon in the taskbar and a panoramic integrated header for a native software experience. 💀
 - **On-the-Fly Hoster Rotation**: Encountering a slow hoster? Right-click any active download and select "Rotate Hoster" to switch servers instantly without losing progress.
-- **Global Multilingual Support**: 100% localized interface, technical logs, and protocol traces in **Spanish (ES)**, **English (EN)**, and **Russian (RU)**.
+- **Global Multilingual Support**: 100% localized interface, technical logs, and protocol traces in **Spanish (ES)**, **English (EN)**, **Russian (RU)**, and **Chinese (ZH)**.
 - **Integrity Auditing (MD5)**: Integrated checksum verification system. Detects download inconsistencies with 100% accuracy and provides yellow visual feedback.
 - **Smart File Repair**: If a file fails verification, Bandolero doesn't just delete it. It truncates the corrupt data and requests only the missing bytes from the server, repairing the file in seconds. 🛠️
 
