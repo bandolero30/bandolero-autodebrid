@@ -1,0 +1,30 @@
+# Bandolero AutoDebrid - Git Ignore 🏴‍☠️🚢💀⚓
+
+# Configuración y Sesión (SEGURIDAD CRÍTICA)
+config.json
+session.json
+
+# Buffers y Logs locales
+*.log
+*.tmp
+debug.txt
+
+# Python y Entorno
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.venv
+env/
+build/
+dist/
+*.spec
+
+# Multimedia e Iconos (opcional si quieres excluirlos, pero app_icon.ico es bueno dejarlo)
+# fonts/  # Ya eliminada físicamente, pero la ignoramos por si acaso
+backup/
+
+# Windows
+Thumbs.db
+desktop.ini
