@@ -1,5 +1,5 @@
 # Bandolero AutoDebrid 🚀🚢💀⚡⚓
-![App Preview](app_preview_fixed.png)
+![App Preview](app_preview_final.png)
 
 
 A professional and robust download manager designed to automate file retrieval via **Real-Debrid**, featuring full support for DLC containers, TXT lists, and intelligent queue management.
