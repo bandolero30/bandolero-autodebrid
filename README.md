@@ -2,7 +2,7 @@
 ![App Preview](app_preview_final.png)
 
 
-A professional and robust download manager designed to automate file retrieval via **Real-Debrid**, featuring full support for DLC containers, TXT lists, and intelligent queue management.
+A professional and robust download manager designed to automate file retrieval via **Real-Debrid**, featuring full support for DLC containers, TXT lists, intelligent queue management, and a **surgical ZIP repair engine**.
 
 > [!IMPORTANT]
 > **External Service Requirement**: Bandolero is a bridge to Debrid services. It **requires an active Real-Debrid (AutoDebrid) API token** to function. This software does **NOT** implement native captcha solving; instead, it leverages the [Real-Debrid](https://real-debrid.com/) API to process protected links seamlessly.
@@ -15,12 +15,19 @@ A professional and robust download manager designed to automate file retrieval v
 - **Multi-Hoster Resilience**: Every file can have multiple sources. If a hoster fails (403, 503 errors, etc.), the engine automatically rotates to the next available mirror in the array.
 - **Enterprise-Grade Encryption (DPAPI)**: Your **Real-Debrid API Token** is stored using the native Windows Data Protection API. It is encrypted specifically for your user account on your PC, making it unreadable even if the configuration file is compromised.
 - **Session Persistence**: Automatically saves your download list, file selection state, and integrity reports. Upon reopening the app, everything resumes exactly where you left off.
-- **Premium Modern UI**: Built with `CustomTkinter`, offering a sleek dark design, high-precision progress bars, and a detailed event console with a professional hacker aesthetic.
+- **Premium Modern UI**: Built with `CustomTkinter`, offering a sleek dark design, high-precision progress bars, a detailed event console with a professional hacker aesthetic, and a glassmorphism banner.
 - **Seamless Registry Integration**: Custom Pirate Skull icon in the taskbar and a panoramic integrated header for a native software experience. 💀
 - **On-the-Fly Hoster Rotation**: Encountering a slow hoster? Right-click any active download and select "Rotate Hoster" to switch servers instantly without losing progress.
 - **Global Multilingual Support**: 100% localized interface, technical logs, and protocol traces in **Spanish (ES)**, **English (EN)**, **Russian (RU)**, and **Chinese (ZH)**.
-- **Integrity Auditing (MD5)**: Integrated checksum verification system. Detects download inconsistencies with 100% accuracy and provides yellow visual feedback.
-- **Smart File Repair**: If a file fails verification, Bandolero doesn't just delete it. It truncates the corrupt data and requests only the missing bytes from the server, repairing the file in seconds. 🛠️
+- **Integrity Auditing — 2-Phase Verification**:
+  - **Phase 1/2 (MD5 Checksum)**: Reads the entire file and verifies its digital fingerprint.
+  - **Phase 2/2 (ZIP Structure)**: Scans every internal file of the ZIP archive for CRC errors, reporting the exact name and byte offset of each corrupted entry.
+  - Live progress bar for both phases, with no UI freeze.
+- **🔬 Surgical ZIP Repair Engine** *(New in v1.1.20260404.1)*:
+  - Detects **all** corrupted files in a single verification pass (no more one-at-a-time repairs).
+  - Downloads **only** the corrupt byte ranges and injects them precisely into the local file using binary streaming — zero RAM buffering, zero destructive operations.
+  - Automatically re-verifies after repair.
+  - **Smart Threshold**: If corruption exceeds 80% of the file, the engine recommends a full re-download instead, deleting the corrupt file and re-queuing cleanly.
 
 ---
 
@@ -28,11 +35,16 @@ A professional and robust download manager designed to automate file retrieval v
 
 | File/Folder | Purpose |
 | :--- | :--- |
-| **`app_gui.py`** | The primary source code of the application. |
-| **`build_exe.ps1`** | A PowerShell automation script to compile the source into a standalone EXE. |
-| **`requirements.txt`** | List of Python dependencies for development environments. |
+| **`main.py`** | Entry point. Launches the application. |
+| **`core/engine.py`** | Download workers, verification engine, surgical repair logic. |
+| **`core/config.py`** | Global version, paths, and configuration constants. |
+| **`ui/`** | All UI components: main window, mixins, modals, tooltips. |
+| **`locales/`** | JSON translation files for ES, EN, RU, ZH. |
+| **`utils/`** | Shared helpers (file size formatting, DPAPI, session I/O). |
+| **`build_exe.ps1`** | PowerShell script to compile into a standalone `.EXE`. |
+| **`requirements.txt`** | Python dependencies. |
 | **`app_icon.ico`** | High-resolution icon for the Windows taskbar and executable. |
-| **`pirate_tech_banner_pro.png`** | The official glassmorphism header asset. |
+| **`pirate_tech_banner_pro.png`** | Official glassmorphism header asset. |
 
 ---
 
@@ -40,12 +52,12 @@ A professional and robust download manager designed to automate file retrieval v
 
 ### `config.json` (User Preferences & Security)
 This file stores your persistent settings, such as download limits, UI font sizes, and default directories.
-- **API Token Storage**: Your Real-Debrid token is **NOT stored in plain text**. It is obfuscated and protected by Windows DPAPI. This ensures that the token is tied to your hardware and Windows user profile.
+- **API Token Storage**: Your Real-Debrid token is **NOT stored in plain text**. It is obfuscated and protected by Windows DPAPI.
 
 ### `session.json` (Download State Persistence)
 This file acts as the "memory" of the application.
 - It preserves your current file list, the status of each download, and whether a file is pending, completed, or failed.
-- It also stores the results of integrity checks (MD5), allowing the app to remember which files were verified without re-scanning.
+- Verification progress is kept separately from download progress to avoid overwriting valid completion states.
 
 ---
 
@@ -79,7 +91,12 @@ pip install -r requirements.txt
 
 3. **Downloading**:
    - Define a **Final Subfolder** name (e.g., the name of the game/package).
-   - Click **▶ Start Queue**. The dynamic engine will process files according to your simultaneous download limits.
+   - Use **▶ Start Selected** to download only checked files, or **▶ Start All** to queue everything.
+
+4. **Verifying & Repairing**:
+   - Right-click a completed file → **Verify Integrity**.
+   - If errors are found, click **Attempt Repair** in the Technical Report window.
+   - The engine handles everything automatically: surgical injection or full re-download, followed by automatic re-verification.
 
 ---
 
@@ -98,7 +115,7 @@ To generate a standalone Windows binary with a custom icon and no background con
    ```
 
 3. **Output**:
-   The final **`Bandolero_AutoDebrid.exe`** will be generated in the **`dist/`** folder. This file is portable and contains all embedded assets.
+   The final **`Bandolero_AutoDebrid_vX.Y.Z.exe`** will be generated in the **`dist/`** folder. This file is portable and contains all embedded assets.
 
 ---
 
@@ -109,4 +126,4 @@ To generate a standalone Windows binary with a custom icon and no background con
 
 ---
 
-**Engineered for precision and high-efficiency download management.**
+**v1.1.20260408 — Engineered for precision and high-efficiency download management.**
